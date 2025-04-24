@@ -31,7 +31,7 @@ const HOSTILE_MOB_PREFIXES = [
 /**
  * The radius (in blocks) within which hostile mobs are prevented from spawning near villages.
  */
-const VILLAGE_RADIUS_BLOCKS = 128
+const VILLAGE_RADIUS_BLOCKS = 32
 
 /**
  * Checks if an entity is a hostile mob based on its type ID.
@@ -51,11 +51,18 @@ function isEntityHostileMob(entity) {
  */
 function isEntityNearVillage(entity) {
     try {
-        const villagers = world.getDimension("overworld").getEntities({
+        const villagers = [
+          ...world.getDimension("overworld").getEntities({
             type: "minecraft:iron_golem",
             location: entity.location,
-            maxDistance: VILLAGE_RADIUS_BLOCKS
-        })
+            maxDistance: VILLAGE_RADIUS_BLOCKS,
+          }),
+          ...world.getDimension("overworld").getEntities({
+            type: "minecraft:villager",
+            location: entity.location,
+            maxDistance: VILLAGE_RADIUS_BLOCKS,
+          }),
+        ];
         return villagers.length > 0
     } catch (err) {
         console.log('SafeVillage: failed to check if near village:', entity.typeId, err)
