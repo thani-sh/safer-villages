@@ -1,3 +1,5 @@
+![Safe Villages Pack Icon](pack_icon.png)
+
 # Safe Villages
 
 A Minecraft Bedrock Edition addon that makes villages safer by preventing hostile mobs from spawning nearby.
@@ -40,7 +42,3 @@ Contributions are welcome! If you'd like to contribute to this project, please f
     - Provide a clear title and description for your changes.
 
 Please ensure your code follows the existing style and that your changes are well-documented.
-
-## Creating .mcpack
-
-Bridge can automatically compile your project into a `.mcpack` file. Alternatively, you can zip the contents and rename the `.zip` file to `.mcpack`.
