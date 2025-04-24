@@ -18,10 +18,6 @@ The addon listens for entity spawn events. When a hostile mob (like zombies, ske
 2.  Open the `.mcpack` file with Minecraft Bedrock Edition. It should automatically import the addon.
 3.  Activate the Behavior Pack in your world settings.
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## Contributing
 
 Contributions are welcome! If you'd like to contribute to this project, please follow these steps:
@@ -42,3 +38,7 @@ Contributions are welcome! If you'd like to contribute to this project, please f
     - Provide a clear title and description for your changes.
 
 Please ensure your code follows the existing style and that your changes are well-documented.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
