@@ -19,3 +19,28 @@ The addon listens for entity spawn events. When a hostile mob (like zombies, ske
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Contributing
+
+Contributions are welcome! If you'd like to contribute to this project, please follow these steps:
+
+1.  **Fork the repository.**
+2.  **Set up your development environment:**
+    - We recommend using [Bridge](https://bridge-core.app/) IDE.
+    - Clone your forked repository to your computer.
+    - Open the project folder in Bridge.
+3.  **Make your changes:**
+    - Create a new branch for your feature or bug fix.
+    - Implement your changes in the relevant files (primarily `scripts/main.js`).
+4.  **Test your changes:**
+    - Ensure your changes work correctly in Minecraft Bedrock Edition.
+5.  **Open a Pull Request:**
+    - Go to the original repository on GitHub.
+    - Click on "New Pull Request".
+    - Provide a clear title and description for your changes.
+
+Please ensure your code follows the existing style and that your changes are well-documented.
+
+## Creating .mcpack
+
+Bridge can automatically compile your project into a `.mcpack` file. Alternatively, you can zip the contents and rename the `.zip` file to `.mcpack`.
