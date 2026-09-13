@@ -18,6 +18,60 @@ The addon listens for entity spawn events. When a hostile mob (like zombies, ske
 2.  Open the `.mcpack` file with Minecraft Bedrock Edition. It should automatically import the addon.
 3.  Activate the Behavior Pack in your world settings.
 
+## Dedicated Server Setup
+
+This addon is a behaviour pack with a script module, so it runs entirely server-side: players do not need to install anything, and there is no resource pack to distribute.
+
+### Requirements
+
+- Bedrock Dedicated Server (BDS) **1.21.50 or newer** (December 2024). The pack depends on `@minecraft/server` `1.16.0`, and that stable API version shipped with 1.21.50 — older builds cannot load the script module. (The manifest's `min_engine_version` still reads `1.21.0`, which is older than the script dependency actually requires.)
+- **No experiments needed.** `@minecraft/server` `1.16.0` is a release version rather than a beta, so the "Beta APIs" toggle stays off.
+
+### Install
+
+1.  **Get the pack folder.** Clone this repository, or rename the release `.mcpack` to `.zip`, extract it, and keep the folder containing `manifest.json`.
+2.  **Start the server once** if you haven't already, so that `worlds/<level-name>/` exists. `<level-name>` comes from `server.properties` (default: `Bedrock level`).
+3.  **Copy the pack folder into the server's behaviour packs directory:**
+
+    ```text
+    <server>/
+    ├── behavior_packs/
+    │   └── safe-villages/        <- the folder from step 1
+    │       ├── manifest.json
+    │       ├── pack_icon.png
+    │       └── scripts/main.js
+    ├── server.properties
+    └── worlds/
+        └── Bedrock level/
+            └── world_behavior_packs.json
+    ```
+
+4.  **Activate it for your world.** Edit `worlds/<level-name>/world_behavior_packs.json`, creating it if it doesn't exist. Use `header.uuid` and `header.version` from `manifest.json` — the header UUID, not a module UUID:
+
+    ```json
+    [
+      {
+        "pack_id": "e51dd8c9-09c2-47bc-80da-3abb26ebd72c",
+        "version": [1, 0, 0]
+      }
+    ]
+    ```
+
+    If the file already lists packs, add this object to the existing array. Order matters: later entries win where content overlaps.
+
+5.  **Restart the server** and watch the console for pack-loading errors.
+6.  **Confirm it is running.** Add `content-log-file-enabled=true` to `server.properties` and restart — the addon's `console.log` lines (`SafeVillage: ...`) then appear in the content log in the server root. In game, walk into a village at night: hostile mobs should vanish as they spawn.
+
+### Changing the radius
+
+The radius lives in `VILLAGE_RADIUS_BLOCKS` in `scripts/main.js` (currently `16`). Edit it, copy the pack folder back, and restart the server — there is no build step, BDS reads `scripts/main.js` directly.
+
+### Troubleshooting
+
+- **Pack does not load** — the folder must sit directly inside `behavior_packs/`, not nested a level deeper, and `pack_id` must match `manifest.json`'s `header.uuid` exactly.
+- **"Pack requires a newer version"** — update BDS to at least the version noted under Requirements.
+- **Script errors on startup** — set `content-log-file-enabled=true`; the details are written to the content log in the server root.
+
 ## Contributing
 
 Contributions are welcome! If you'd like to contribute to this project, please follow these steps:
