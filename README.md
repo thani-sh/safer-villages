@@ -6,11 +6,11 @@ A Minecraft Bedrock Edition addon that makes villages safer by preventing hostil
 
 ## Description
 
-This addon enhances the safety of villages by automatically killing hostile mobs that spawn within a certain radius (currently 32 blocks) of a village. This is particularly helpful for players who prefer a less challenging experience around villages, bridging the gap between "peaceful" and "easy" difficulty levels.
+This addon enhances the safety of villages by automatically killing hostile mobs that spawn within a certain radius (currently 16 blocks) of a village. This is particularly helpful for players who prefer a less challenging experience around villages, bridging the gap between "peaceful" and "easy" difficulty levels.
 
 ## How it Works
 
-The addon listens for entity spawn events. When a hostile mob (like zombies, skeletons, creepers, etc.) spawns, the addon checks if it's within 32 blocks of any villager or iron golem. If it is, the mob is instantly killed, preventing it from ever reaching the village.
+The addon listens for entity spawn events. When a hostile mob (like zombies, skeletons, creepers, etc.) spawns, the addon checks if it's within 16 blocks of any villager or iron golem. If it is, the mob is instantly killed, preventing it from ever reaching the village.
 
 ## Installation
 
