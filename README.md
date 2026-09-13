@@ -6,11 +6,11 @@ A Minecraft Bedrock Edition addon that makes villages safer by preventing hostil
 
 ## Description
 
-This addon enhances the safety of villages by automatically killing hostile mobs that spawn within a certain radius (currently 16 blocks) of a village. This is particularly helpful for players who prefer a less challenging experience around villages, bridging the gap between "peaceful" and "easy" difficulty levels.
+This addon enhances the safety of villages by automatically killing hostile mobs that spawn within a certain radius (currently 32 blocks) of a village. This is particularly helpful for players who prefer a less challenging experience around villages, bridging the gap between "peaceful" and "easy" difficulty levels.
 
 ## How it Works
 
-The addon listens for entity spawn events. When a hostile mob (like zombies, skeletons, creepers, etc.) spawns, the addon checks if it's within 16 blocks of any villager or iron golem. If it is, the mob is instantly killed, preventing it from ever reaching the village.
+The addon listens for entity spawn events. When a hostile mob (like zombies, skeletons, creepers, etc.) spawns, the addon checks whether it is within 32 blocks of any villager or iron golem, or of a village marker block — a bed or a bell — since a house can stand empty of villagers while still being part of the village. If it is, the mob is instantly killed, preventing it from ever reaching the village.
 
 ## Installation
 
@@ -64,7 +64,7 @@ This addon is a behaviour pack with a script module, so it runs entirely server-
 
 ### Changing the radius
 
-The radius lives in `VILLAGE_RADIUS_BLOCKS` in `scripts/main.js` (currently `16`). Edit it, copy the pack folder back, and restart the server — there is no build step, BDS reads `scripts/main.js` directly.
+The radius lives in `VILLAGE_RADIUS_BLOCKS` in `scripts/main.js` (currently `32`). Edit it, copy the pack folder back, and restart the server — there is no build step, BDS reads `scripts/main.js` directly.
 
 ### Troubleshooting
 
