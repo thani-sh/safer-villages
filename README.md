@@ -24,7 +24,7 @@ This addon is a behaviour pack with a script module, so it runs entirely server-
 
 ### Requirements
 
-- Bedrock Dedicated Server (BDS) **1.21.50 or newer** (December 2024). The pack depends on `@minecraft/server` `1.16.0`, and that stable API version shipped with 1.21.50 — older builds cannot load the script module. (The manifest's `min_engine_version` still reads `1.21.0`, which is older than the script dependency actually requires.)
+- Bedrock Dedicated Server (BDS) **1.21.50 or newer** (December 2024). The pack depends on `@minecraft/server` `1.16.0`, and that stable API version shipped with 1.21.50 — older builds cannot load the script module. The manifest's `min_engine_version` states the same floor, so an older server rejects the pack with a clear version error instead of silently failing to load the script.
 - **No experiments needed.** `@minecraft/server` `1.16.0` is a release version rather than a beta, so the "Beta APIs" toggle stays off.
 
 ### Install
