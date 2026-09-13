@@ -61,31 +61,40 @@ function isEntityHostileMob(entity) {
  * Checks if an entity is within VILLAGE_RADIUS_BLOCKS of a village.
  */
 function isEntityNearVillage(entity) {
-  try {
-    for (const entityType of VILLAGER_MOB_NAMES) {
-      const villagers = world.getDimension("overworld").getEntities({
+  // Query the entity's own dimension: a mob spawning in the Nether or the End
+  // was previously checked against overworld coordinates, which either missed
+  // real villages or matched an unrelated location.
+  const dimension = entity.dimension ?? world.getDimension("overworld");
+
+  for (const entityType of VILLAGER_MOB_NAMES) {
+    try {
+      const villagers = dimension.getEntities({
         type: entityType,
         location: entity.location,
         maxDistance: VILLAGE_RADIUS_BLOCKS,
       });
+
+      if (villagers.length > 0) {
+        console.log(
+          "SafeVillage: found villagers of type:",
+          entityType,
+          villagers.length
+        );
+        return true;
+      }
+    } catch (err) {
       console.log(
-        "SafeVillage: found villagers of type:",
-        entityType,
-        villagers.length
+        "SafeVillage: failed to check if near village:",
+        entity.typeId,
+        err
       );
-      return true;
     }
-    console.log("SafeVillage: did not find any villagers nearby:");
-    return false;
-  } catch (err) {
-    console.log(
-      "SafeVillage: failed to check if near village:",
-      entity.typeId,
-      err
-    );
-    // TODO: Figure out why entity.location is undefined sometimes
-    return true;
   }
+
+  // Nothing found inside the radius (or the check could not be completed):
+  // leave the mob alone rather than killing something we cannot place.
+  console.log("SafeVillage: did not find any villagers nearby:", entity.typeId);
+  return false;
 }
 
 /**
