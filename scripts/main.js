@@ -5,6 +5,9 @@ import { world } from "@minecraft/server";
  */
 const HOSTILE_MOB_PREFIXES = [
   "minecraft:blaze",
+  "minecraft:bogged",
+  "minecraft:breeze",
+  "minecraft:creaking",
   "minecraft:creeper",
   "minecraft:drowned",
   "minecraft:enderman",
@@ -13,6 +16,7 @@ const HOSTILE_MOB_PREFIXES = [
   "minecraft:guardian",
   "minecraft:hoglin",
   "minecraft:magma_cube",
+  "minecraft:parched",
   "minecraft:phantom",
   "minecraft:piglin",
   "minecraft:pillager",
