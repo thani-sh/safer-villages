@@ -62,7 +62,7 @@ const VILLAGER_MOB_NAMES = [
 /**
  * The radius (in blocks) within which hostile mobs are prevented from spawning near villages.
  */
-const VILLAGE_RADIUS_BLOCKS = 32;
+const VILLAGE_RADIUS_BLOCKS = 16;
 
 /**
  * Checks if an entity is a hostile mob based on its type ID.
