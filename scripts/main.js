@@ -2,30 +2,52 @@ import { world } from "@minecraft/server";
 
 /**
  * An array of entity ID prefixes for hostile mobs. Used to quickly identify hostile entities.
+ *
+ * These are Bedrock identifiers, as returned by entity.typeId, and several differ from the
+ * Java names: the evoker is "minecraft:evocation_illager" and the zombie piglin is
+ * "minecraft:zombie_pigman" (already covered by the "minecraft:zombie" prefix). Prefixes are
+ * compared with startsWith, so variants need their own entries -- "minecraft:spider" does not
+ * cover "minecraft:cave_spider", and "minecraft:guardian" does not cover
+ * "minecraft:elder_guardian".
+ *
+ * Deliberately excluded: the wither and the ender dragon, which are player-summoned bosses
+ * rather than nuisance spawns, and the tamable jockey mounts (camel husk, zombie nautilus).
  */
 const HOSTILE_MOB_PREFIXES = [
   "minecraft:blaze",
+  "minecraft:bogged",
+  "minecraft:breeze",
+  "minecraft:cave_spider",
+  "minecraft:creaking",
   "minecraft:creeper",
   "minecraft:drowned",
+  "minecraft:elder_guardian",
   "minecraft:enderman",
-  "minecraft:evoker",
+  "minecraft:endermite",
+  "minecraft:evocation_illager",
   "minecraft:ghast",
   "minecraft:guardian",
   "minecraft:hoglin",
+  "minecraft:husk",
   "minecraft:magma_cube",
+  "minecraft:parched",
   "minecraft:phantom",
   "minecraft:piglin",
   "minecraft:pillager",
   "minecraft:ravager",
+  "minecraft:shulker",
+  "minecraft:silverfish",
   "minecraft:skeleton",
   "minecraft:slime",
   "minecraft:spider",
   "minecraft:stray",
   "minecraft:vex",
   "minecraft:vindicator",
+  "minecraft:warden",
   "minecraft:witch",
+  "minecraft:wither_skeleton",
+  "minecraft:zoglin",
   "minecraft:zombie",
-  "minecraft:zombified_piglin",
 ];
 
 /**
