@@ -128,6 +128,8 @@ function removeHostileMob(entity) {
   // there (the old TODO this replaced). remove() also skips the death animation
   // and its drops, so a mob that never reaches the village leaves no loot behind.
   try {
+    // isValid() is a method in @minecraft/server 1.16.0 (it reports whether the
+    // entity can still be manipulated by script), so it must be called.
     if (!entity.isValid()) {
       return;
     }
