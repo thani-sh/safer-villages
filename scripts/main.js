@@ -45,6 +45,9 @@ const HOSTILE_MOB_PREFIXES = [
   "minecraft:slime",
   "minecraft:spider",
   "minecraft:stray",
+  // spawn_category "monster" in Mojang's data, but its type_family is only
+  // [sulfur_cube, animal, mob], so the family check above cannot see it.
+  "minecraft:sulfur_cube",
   "minecraft:vex",
   "minecraft:vindicator",
   "minecraft:warden",
