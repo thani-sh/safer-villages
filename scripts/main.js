@@ -1,17 +1,21 @@
 import { world } from "@minecraft/server";
 
 /**
- * An array of entity ID prefixes for hostile mobs. Used to quickly identify hostile entities.
+ * Fallback list of hostile mob type-id prefixes, used when an entity's type
+ * families cannot be read and for hostile mobs that do not declare the
+ * "monster" family -- the hoglin is one, so it must stay here.
  *
- * These are Bedrock identifiers, as returned by entity.typeId, and several differ from the
- * Java names: the evoker is "minecraft:evocation_illager" and the zombie piglin is
- * "minecraft:zombie_pigman" (already covered by the "minecraft:zombie" prefix). Prefixes are
- * compared with startsWith, so variants need their own entries -- "minecraft:spider" does not
- * cover "minecraft:cave_spider", and "minecraft:guardian" does not cover
+ * These are Bedrock identifiers, as returned by entity.typeId, and several
+ * differ from the Java names: the evoker is "minecraft:evocation_illager" and
+ * the zombie piglin is "minecraft:zombie_pigman" (already covered by the
+ * "minecraft:zombie" prefix). Prefixes are compared with startsWith, so
+ * variants need their own entries -- "minecraft:spider" does not cover
+ * "minecraft:cave_spider", and "minecraft:guardian" does not cover
  * "minecraft:elder_guardian".
  *
- * Deliberately excluded: the wither and the ender dragon, which are player-summoned bosses
- * rather than nuisance spawns, and the tamable jockey mounts (camel husk, zombie nautilus).
+ * The ender dragon is deliberately not listed, and does not declare the
+ * monster family either, so it is never touched. The wither does declare
+ * "monster" and is therefore treated like any other hostile mob.
  */
 const HOSTILE_MOB_PREFIXES = [
   "minecraft:blaze",
@@ -65,16 +69,41 @@ const VILLAGER_MOB_NAMES = [
 const VILLAGE_RADIUS_BLOCKS = 16;
 
 /**
- * Checks if an entity is a hostile mob based on its type ID.
+ * True when an entity declares the "monster" type family.
+ *
+ * Every vanilla hostile mob declares it (checked against Mojang's
+ * behavior_pack/entities data), so this keeps up with mobs added by future game
+ * updates -- and with mobs from other addons -- without maintaining a list.
+ */
+function isMonsterFamily(entity) {
+  try {
+    return entity.matches({ families: ["monster"] });
+  } catch (err) {
+    // Families are not always readable for a just-spawned entity; the type-id
+    // list below is the fallback.
+    console.log("SafeVillage: family check failed for:", entity.typeId, err);
+    return false;
+  }
+}
+
+/**
+ * Checks if an entity is a hostile mob: either it belongs to the "monster" type
+ * family, or its type id matches the fallback list below.
  */
 function isEntityHostileMob(entity) {
+  if (isMonsterFamily(entity)) {
+    console.log("SafeVillage: mob is hostile (monster family):", entity.typeId);
+    return true;
+  }
+
   const entityId = entity.typeId;
   for (const prefix of HOSTILE_MOB_PREFIXES) {
     if (entityId.startsWith(prefix)) {
-      console.log("SafeVillage: mob is hostile:", entity.typeId);
+      console.log("SafeVillage: mob is hostile (known type):", entity.typeId);
       return true;
     }
   }
+
   console.log("SafeVillage: mob is not hostile:", entity.typeId);
   return false;
 }
