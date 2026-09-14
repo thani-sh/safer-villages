@@ -122,23 +122,30 @@ function isEntityNearVillage(entity) {
 /**
  * Checks if an entity is within VILLAGE_RADIUS_BLOCKS of a village.
  */
-function killHostileMob(entity) {
+function removeHostileMob(entity) {
+  // remove() rather than kill(): this runs from the spawn event, where the entity
+  // is not always fully initialised yet, and kill() has been observed to throw
+  // there (the old TODO this replaced). remove() also skips the death animation
+  // and its drops, so a mob that never reaches the village leaves no loot behind.
   try {
-    console.log("SafeVillage: kiling hostile near village:", entity.typeId);
-    entity.kill();
+    if (!entity.isValid()) {
+      return;
+    }
+
+    console.log("SafeVillage: removing hostile near village:", entity.typeId);
+    entity.remove();
   } catch (err) {
-    console.log("SafeVillage: failed to kill hostile mob:", entity.typeId, err);
-    // TODO: Figure out why it sometimes throw errors when killing mobs
+    console.log("SafeVillage: failed to remove hostile mob:", entity.typeId, err);
   }
 }
 
 /**
- * Subscribes to the entitySpawn event to kill hostile mobs near villages.
+ * Subscribes to the entitySpawn event to remove hostile mobs near villages.
  */
 world.afterEvents.entitySpawn.subscribe((e) => {
   console.log("SafeVillage: checking spawned entity:", e.entity.typeId);
 
   if (isEntityHostileMob(e.entity) && isEntityNearVillage(e.entity)) {
-    killHostileMob(e.entity);
+    removeHostileMob(e.entity);
   }
 });
