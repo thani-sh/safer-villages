@@ -1,0 +1,12 @@
+{
+  "name": "safer-villages",
+  "private": true,
+  "type": "module",
+  "description": "Bedrock add-on that keeps hostile mobs from spawning around villages",
+  "scripts": {
+    "test": "node --import ./test/loader.mjs --test \"test/*.test.mjs\""
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

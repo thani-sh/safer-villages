@@ -72,6 +72,16 @@ The radius lives in `VILLAGE_RADIUS_BLOCKS` in `scripts/main.js` (currently `32`
 - **"Pack requires a newer version"** — update BDS to at least the version noted under Requirements.
 - **Script errors on startup** — set `content-log-file-enabled=true`; the details are written to the content log in the server root.
 
+## Tests
+
+The addon's logic runs under Node, with a test double standing in for the game's Script API, so its spawn behaviour can be checked without launching Minecraft:
+
+```bash
+npm test        # Node 22 or newer; no dependencies to install
+```
+
+`scripts/main.js` is loaded exactly as it ships — the double answers its `@minecraft/server` import — and the tests assert what the addon *did* (removed, killed, queried the engine) rather than what it logged. The type families in `test/families.json` are read from Mojang's behaviour pack, so "is this mob a monster" is the game's own answer.
+
 ## Contributing
 
 Contributions are welcome! If you'd like to contribute to this project, please follow these steps:
@@ -85,7 +95,8 @@ Contributions are welcome! If you'd like to contribute to this project, please f
     - Create a new branch for your feature or bug fix.
     - Implement your changes in the relevant files (primarily `scripts/main.js`).
 4.  **Test your changes:**
-    - Ensure your changes work correctly in Minecraft Bedrock Edition.
+    - Run `npm test` — it covers which mobs are stopped, where, and how (see [Tests](#tests)).
+    - Then confirm the behaviour in Minecraft Bedrock Edition, since the radius, the spawn event and the block scan are the game's own.
 5.  **Open a Pull Request:**
     - Go to the original repository on GitHub.
     - Click on "New Pull Request".
