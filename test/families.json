@@ -1,0 +1,271 @@
+{
+  "_note": "Type families per entity type id, as declared by Mojang's behaviour pack. The addon decides hostility with entity.matches({ families: ['monster'] }) and falls back to its type-id list when families cannot be read, so the tests need the real family sets: hoglin, sulfur_cube, camel_husk and ender_dragon deliberately declare no 'monster'.",
+  "_provenance": "Values read from Mojang/bedrock-samples behavior_pack/entities/*.json by entity type id (the file name is the runtime typeId). Regenerate from that repository rather than editing by hand.",
+  "_synthetic": {
+    "minecraft:future_beast": "not a real mob - stands in for one a future update adds",
+    "custom:troll": "not a real mob - an addon mob in a namespace this pack cannot know"
+  },
+  "minecraft:zombie": [
+    "baby_undead",
+    "mob",
+    "monster",
+    "undead",
+    "zombie",
+    "zombie_rider"
+  ],
+  "minecraft:creeper": [
+    "creeper",
+    "mob",
+    "monster"
+  ],
+  "minecraft:blaze": [
+    "blaze",
+    "mob",
+    "monster"
+  ],
+  "minecraft:wither": [
+    "mob",
+    "monster",
+    "skeleton",
+    "undead",
+    "wither"
+  ],
+  "minecraft:zombie_nautilus": [
+    "aquatic",
+    "mob",
+    "monster",
+    "undead",
+    "zombie_nautilus"
+  ],
+  "minecraft:evocation_illager": [
+    "evocation_illager",
+    "illager",
+    "mob",
+    "monster"
+  ],
+  "minecraft:warden": [
+    "mob",
+    "monster",
+    "warden"
+  ],
+  "minecraft:husk": [
+    "baby_undead",
+    "husk",
+    "husk_rider",
+    "mob",
+    "monster",
+    "undead",
+    "zombie"
+  ],
+  "minecraft:phantom": [
+    "mob",
+    "monster",
+    "phantom",
+    "undead"
+  ],
+  "minecraft:silverfish": [
+    "arthropod",
+    "lightweight",
+    "mob",
+    "monster",
+    "silverfish"
+  ],
+  "minecraft:ravager": [
+    "mob",
+    "monster",
+    "ravager"
+  ],
+  "minecraft:witch": [
+    "mob",
+    "monster",
+    "witch"
+  ],
+  "minecraft:creaking": [
+    "creaking",
+    "mob",
+    "monster"
+  ],
+  "minecraft:cave_spider": [
+    "arthropod",
+    "cavespider",
+    "mob",
+    "monster"
+  ],
+  "minecraft:elder_guardian": [
+    "aquatic",
+    "guardian_elder",
+    "mob",
+    "monster"
+  ],
+  "minecraft:hoglin": [
+    "hoglin",
+    "hoglin_adult",
+    "hoglin_baby",
+    "hoglin_huntable",
+    "mob"
+  ],
+  "minecraft:sulfur_cube": [
+    "animal",
+    "mob",
+    "sulfur_cube"
+  ],
+  "minecraft:camel_husk": [
+    "camel_husk",
+    "mob",
+    "undead"
+  ],
+  "minecraft:ender_dragon": [
+    "dragon",
+    "mob"
+  ],
+  "minecraft:villager": [
+    "armorer",
+    "artisan",
+    "blacksmith",
+    "butcher",
+    "cartographer",
+    "cleric",
+    "farmer",
+    "fisherman",
+    "fletcher",
+    "leatherworker",
+    "librarian",
+    "mob",
+    "peasant",
+    "priest",
+    "shepherd",
+    "toolsmith",
+    "villager",
+    "weaponsmith"
+  ],
+  "minecraft:villager_v2": [
+    "armorer",
+    "artisan",
+    "blacksmith",
+    "butcher",
+    "cartographer",
+    "cleric",
+    "farmer",
+    "fisherman",
+    "fletcher",
+    "leatherworker",
+    "librarian",
+    "mob",
+    "nitwit",
+    "peasant",
+    "priest",
+    "shepherd",
+    "stone_mason",
+    "toolsmith",
+    "unskilled",
+    "villager",
+    "weaponsmith"
+  ],
+  "minecraft:iron_golem": [
+    "irongolem",
+    "mob"
+  ],
+  "minecraft:cow": [
+    "cow",
+    "mob"
+  ],
+  "minecraft:pig": [
+    "mob",
+    "pig"
+  ],
+  "minecraft:wolf": [
+    "mob",
+    "wolf"
+  ],
+  "minecraft:camel": [
+    "camel",
+    "mob"
+  ],
+  "minecraft:nautilus": [
+    "aquatic",
+    "mob",
+    "nautilus"
+  ],
+  "minecraft:drowned": [
+    "baby_undead",
+    "drowned",
+    "mob",
+    "monster",
+    "undead",
+    "zombie"
+  ],
+  "minecraft:piglin": [
+    "baby_piglin",
+    "mob",
+    "monster",
+    "piglin",
+    "piglin_hunter"
+  ],
+  "minecraft:zoglin": [
+    "mob",
+    "monster",
+    "undead",
+    "zoglin",
+    "zoglin_adult",
+    "zoglin_baby"
+  ],
+  "minecraft:zombie_pigman": [
+    "baby_undead",
+    "baby_zombie_pigman",
+    "mob",
+    "monster",
+    "undead",
+    "zombie_pigman"
+  ],
+  "minecraft:zombie_villager": [
+    "armorer",
+    "butcher",
+    "cartographer",
+    "cleric",
+    "farmer",
+    "fisherman",
+    "fletcher",
+    "leatherworker",
+    "librarian",
+    "mob",
+    "monster",
+    "shepherd",
+    "toolsmith",
+    "undead",
+    "weaponsmith",
+    "zombie",
+    "zombie_villager"
+  ],
+  "minecraft:zombie_villager_v2": [
+    "armorer",
+    "baby_undead",
+    "butcher",
+    "cartographer",
+    "cleric",
+    "farmer",
+    "fisherman",
+    "fletcher",
+    "leatherworker",
+    "librarian",
+    "mob",
+    "monster",
+    "nitwit",
+    "shepherd",
+    "stone_mason",
+    "toolsmith",
+    "undead",
+    "unskilled",
+    "weaponsmith",
+    "zombie",
+    "zombie_villager"
+  ],
+  "minecraft:future_beast": [
+    "mob",
+    "monster"
+  ],
+  "custom:troll": [
+    "mob",
+    "monster",
+    "troll"
+  ]
+}
