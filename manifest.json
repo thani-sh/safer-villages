@@ -24,7 +24,7 @@
 		"uuid": "e51dd8c9-09c2-47bc-80da-3abb26ebd72c",
 		"version": [
 			1,
-			0,
+			1,
 			0
 		]
 	},
@@ -34,7 +34,7 @@
 			"uuid": "a272d7a6-8ced-4ab2-8eb0-e2d03e2bdef0",
 			"version": [
 				1,
-				0,
+				1,
 				0
 			]
 		},
@@ -45,7 +45,7 @@
 			"entry": "scripts/main.js",
 			"version": [
 				1,
-				0,
+				1,
 				0
 			]
 		}
