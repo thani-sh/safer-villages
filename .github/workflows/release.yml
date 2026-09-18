@@ -49,6 +49,10 @@ jobs:
         with:
           bun-version: 1.4.2
 
+      # fflate is the release script's only dependency.
+      - name: Install the release scripts' dependencies
+        run: bun install --frozen-lockfile
+
       # A release is always cut from the branch people install from.
       - name: Check the branch
         env:
@@ -68,13 +72,13 @@ jobs:
             (.modules | length > 0)
           ' manifest.json > /dev/null
 
-          for entry in $(jq -r '.modules[]?.entry // empty' manifest.json); do
+          while IFS= read -r entry; do
             [ -f "${entry}" ] || { echo "::error::module entry ${entry} is missing"; exit 1; }
-          done
+          done < <(jq -r '.modules[]?.entry // empty' manifest.json)
 
-          for file in $(git ls-files '*.js'); do
+          while IFS= read -r file; do
             node --check "${file}"
-          done
+          done < <(git ls-files '*.js')
 
       - name: Work out the next version
         id: version
