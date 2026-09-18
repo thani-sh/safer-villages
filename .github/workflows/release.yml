@@ -1,0 +1,180 @@
+name: Release
+
+# Cuts a release of the addon: bumps the pack version, commits it, tags that
+# commit, builds the .mcpack from the tagged tree and attaches it to a GitHub
+# release. Manual only - a version number is a decision, not a side effect.
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: Which part of the pack version to increase
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+        default: patch
+      dry_run:
+        description: Validate and build only - no commit, tag or release
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Tag, build and publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out
+        uses: actions/checkout@v5
+        with:
+          # Tags are needed to check whether the computed version already exists.
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+
+      # fflate is the release script's only dependency.
+      - name: Install the release scripts' dependencies
+        run: bun install --frozen-lockfile
+
+      # A release is always cut from the branch people install from.
+      - name: Check the branch
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          if [ "${GITHUB_REF_NAME}" != "${DEFAULT_BRANCH}" ]; then
+            echo "::error::Releases are cut from ${DEFAULT_BRANCH}, not ${GITHUB_REF_NAME}."
+            exit 1
+          fi
+
+      # Cheaper to fail here than to publish a pack the game cannot load.
+      - name: Validate the addon
+        run: |
+          jq -e '
+            (.header.uuid | type == "string") and
+            (.header.version | length == 3) and
+            (.modules | length > 0)
+          ' manifest.json > /dev/null
+
+          while IFS= read -r entry; do
+            [ -f "${entry}" ] || { echo "::error::module entry ${entry} is missing"; exit 1; }
+          done < <(jq -r '.modules[]?.entry // empty' manifest.json)
+
+          while IFS= read -r file; do
+            node --check "${file}"
+          done < <(git ls-files '*.js')
+
+      - name: Work out the next version
+        id: version
+        env:
+          BUMP: ${{ inputs.bump }}
+        run: |
+          current=$(jq -r '.header.version | join(".")' manifest.json)
+          IFS=. read -r major minor patch <<< "${current}"
+
+          case "${BUMP}" in
+            major) major=$((major + 1)); minor=0; patch=0 ;;
+            minor) minor=$((minor + 1)); patch=0 ;;
+            patch) patch=$((patch + 1)) ;;
+            *) echo "::error::unknown bump '${BUMP}'"; exit 1 ;;
+          esac
+
+          next="${major}.${minor}.${patch}"
+          if git rev-parse -q --verify "refs/tags/v${next}" > /dev/null; then
+            echo "::error::tag v${next} already exists - delete it or bump further"
+            exit 1
+          fi
+
+          echo "current=${current}" >> "${GITHUB_OUTPUT}"
+          echo "next=${next}" >> "${GITHUB_OUTPUT}"
+          echo "bumping ${current} -> ${next}"
+
+      - name: Bump the version in manifest.json
+        env:
+          NEXT: ${{ steps.version.outputs.next }}
+        run: |
+          # TypeScript/Bun. The manifest is rewritten with its own tab
+          # indentation, so the release commit shows the version fields
+          # changing and nothing else.
+          bun run .github/scripts/bump-manifest.ts "${NEXT}"
+
+          # The bump is the only change that may reach the tag.
+          changed=$(git diff --name-only)
+          if [ "${changed}" != "manifest.json" ]; then
+            echo "::error::the version bump changed more than manifest.json: ${changed}"
+            git diff
+            exit 1
+          fi
+
+      - name: Commit the bump and tag it
+        if: ${{ !inputs.dry_run }}
+        env:
+          NEXT: ${{ steps.version.outputs.next }}
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add manifest.json
+          git commit -m "chore: release v${NEXT}"
+          git push origin "HEAD:${BRANCH}"
+
+          git tag -a "v${NEXT}" -m "Safe Villages v${NEXT}"
+          git push origin "v${NEXT}"
+
+      - name: Build the addon pack
+        env:
+          NEXT: ${{ steps.version.outputs.next }}
+        run: |
+          bun run .github/scripts/build-mcpack.ts \
+            --version "${NEXT}" \
+            --out "dist/safe-villages-v${NEXT}.mcpack"
+
+      # The builder reads its own archive back with the same library that wrote it,
+      # which cannot see a library-wide problem. This is the independent check.
+      - name: Check the pack opens outside Bun
+        env:
+          NEXT: ${{ steps.version.outputs.next }}
+        run: unzip -t "dist/safe-villages-v${NEXT}.mcpack"
+
+      - name: Keep the pack as a workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: safe-villages-mcpack
+          path: dist/*.mcpack
+          if-no-files-found: error
+
+      - name: Publish the release
+        if: ${{ !inputs.dry_run }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NEXT: ${{ steps.version.outputs.next }}
+        run: |
+          cat > release-notes.md <<EOF
+          **Install:** download \`safe-villages-v${NEXT}.mcpack\` below and open it - the game imports the pack.
+
+          **Updating from an older version:** a world records the exact pack version it was given, so after replacing the pack, re-add it to the world (Edit > Behaviour Packs) for the new version to take effect.
+          EOF
+
+          gh release create "v${NEXT}" \
+            "dist/safe-villages-v${NEXT}.mcpack" \
+            --title "Safe Villages v${NEXT}" \
+            --generate-notes \
+            --notes "$(cat release-notes.md)" \
+            --verify-tag
