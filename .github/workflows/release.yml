@@ -146,6 +146,13 @@ jobs:
             --version "${NEXT}" \
             --out "dist/safe-villages-v${NEXT}.mcpack"
 
+      # The builder reads its own archive back with the same library that wrote it,
+      # which cannot see a library-wide problem. This is the independent check.
+      - name: Check the pack opens outside Bun
+        env:
+          NEXT: ${{ steps.version.outputs.next }}
+        run: unzip -t "dist/safe-villages-v${NEXT}.mcpack"
+
       - name: Keep the pack as a workflow artifact
         uses: actions/upload-artifact@v4
         with:
@@ -168,6 +175,6 @@ jobs:
           gh release create "v${NEXT}" \
             "dist/safe-villages-v${NEXT}.mcpack" \
             --title "Safe Villages v${NEXT}" \
-            --notes-file release-notes.md \
             --generate-notes \
+            --notes "$(cat release-notes.md)" \
             --verify-tag

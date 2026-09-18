@@ -15,8 +15,11 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 import { unzipSync, zipSync } from "fflate";
 
-// What ships, relative to the repository root. Everything else in the repo -
-// README, LICENSE, .github, node_modules - is not part of the pack.
+// What ships, relative to the repository root. Deliberately explicit: a new pack
+// directory (entities/, textures/, blocks/, ...) is added here by hand, and nothing
+// that is not named can reach a release - README, LICENSE, .github and node_modules
+// stay out even if they exist. The build fails if manifest.json declares a module
+// entry that this list does not cover.
 const PACK_PATHS = ["manifest.json", "pack_icon.png", "scripts/**/*"];
 
 type Manifest = { header?: { version?: number[] }; modules?: { entry?: string }[] };
@@ -34,7 +37,13 @@ function packMembers(): string[] {
   return [...members].sort();
 }
 
-/** Read the archive back: a pack that does not open is not a release. */
+/**
+ * Read the archive back: a pack that does not open is not a release. This proves the
+ * archive is well formed, holds the version it claims, and contains exactly the
+ * intended files - nothing missing and nothing extra. Because it reads with the same
+ * library that wrote, the workflow also runs `unzip -t` on the artifact: only a
+ * foreign reader can see a library-wide incompatibility.
+ */
 function verify(path: string, version: string, manifest: Manifest, expected: string[]): string[] {
   const entries = unzipSync(readFileSync(path));
   const names = Object.keys(entries);
@@ -51,8 +60,13 @@ function verify(path: string, version: string, manifest: Manifest, expected: str
     fail("manifest.json is not at the archive root - the game will not load this pack");
   }
 
-  const packed = JSON.parse(new TextDecoder().decode(entries["manifest.json"]));
-  const declared = (packed?.header?.version ?? []).join(".");
+  let packed: Manifest;
+  try {
+    packed = JSON.parse(new TextDecoder().decode(entries["manifest.json"]));
+  } catch (error) {
+    fail(`the packed manifest is not readable JSON: ${error instanceof Error ? error.message : String(error)}`);
+  }
+  const declared = (packed.header?.version ?? []).join(".");
   if (declared !== version) {
     fail(`the packed manifest declares ${declared || "no version"}, expected ${version}`);
   }

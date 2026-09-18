@@ -39,6 +39,7 @@ if (manifest.modules !== undefined && !Array.isArray(manifest.modules)) {
 
 manifest.header.version = version;
 for (const module of manifest.modules ?? []) {
+  if (!module || typeof module !== "object") fail("manifest.json has a malformed module entry");
   module.version = version;
 }
 
