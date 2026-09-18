@@ -44,6 +44,11 @@ jobs:
         with:
           node-version: 24
 
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+
       # A release is always cut from the branch people install from.
       - name: Check the branch
         env:
@@ -100,24 +105,10 @@ jobs:
         env:
           NEXT: ${{ steps.version.outputs.next }}
         run: |
-          python3 - "${NEXT}" <<'PY'
-          import json
-          import sys
-          from pathlib import Path
-
-          version = [int(part) for part in sys.argv[1].split(".")]
-          path = Path("manifest.json")
-
-          # Written back with the file's own tab indentation, so the release
-          # commit shows the version fields changing and nothing else.
-          manifest = json.loads(path.read_text())
-          manifest["header"]["version"] = version
-          for module in manifest.get("modules", []):
-              module["version"] = version
-          path.write_text(json.dumps(manifest, indent="\t", ensure_ascii=False) + "\n")
-
-          print("manifest.json now declares", ".".join(str(part) for part in version))
-          PY
+          # TypeScript/Bun. The manifest is rewritten with its own tab
+          # indentation, so the release commit shows the version fields
+          # changing and nothing else.
+          bun run .github/scripts/bump-manifest.ts "${NEXT}"
 
           # The bump is the only change that may reach the tag.
           changed=$(git diff --name-only)
@@ -147,7 +138,7 @@ jobs:
         env:
           NEXT: ${{ steps.version.outputs.next }}
         run: |
-          python3 .github/scripts/build_mcpack.py \
+          bun run .github/scripts/build-mcpack.ts \
             --version "${NEXT}" \
             --out "dist/safe-villages-v${NEXT}.mcpack"
 
